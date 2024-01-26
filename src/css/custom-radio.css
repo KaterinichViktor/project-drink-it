@@ -1,0 +1,51 @@
+/* custom-radio.css */
+
+/* Hide the default radio button */
+.radio-button input {
+    display: none;
+  }
+  
+  /* Style for the custom radio button */
+  .radio-button label {
+    display: inline-block;
+    position: relative;
+    padding-left: 30px; /* Adjust the padding as needed */
+    cursor: pointer;
+    font-size: 16px; /* Adjust the font size as needed */
+  }
+  
+  /* Style for the custom checkmark */
+  .radio-button label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 14px; /* Adjust the width as needed */
+    height: 14px; /* Adjust the height as needed */
+    border: 1px solid #3498db; /* Change this to your desired border color */
+    border-radius: 50%; /* Make it a circle */
+    background-color: #fff; /* Change this to your desired background color */
+    box-sizing: border-box;
+  }
+  .radio-button label::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 6px; /* Adjust the width as needed */
+    height: 6px; /* Adjust the height as needed */
+    border: none; /* Change this to your desired border color */
+    border-radius: 50%; /* Make it a circle */
+    background-color: transparent; /* Change this to your desired background color */
+    box-sizing: border-box;
+  }
+  
+  /* Style for the custom checkmark when selected */
+  .radio-button input:checked + label::after {
+    background-color: #3498db; /* Change this to your desired background color when selected */
+    /* border-color: #3498db; */
+  }
+  
+
+
+  

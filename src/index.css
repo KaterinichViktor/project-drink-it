@@ -1,5 +1,28 @@
 @import-normalize; /* bring in normalize.css styles */
 
+@import url(./css/daily-norma-modal.css);
+@import url(./css/daily-norma.css);
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+:root {
+	font-family: "Roboto", sans-serif;
+
+	--primery-color-black: #2f2f2f;
+	--primery-color-white: #fff;
+	--primery-color-blue: #407bff;
+
+	--secondary-color-blue: #9ebbff;
+	--bg-color-light-blue: #ecf2ff;
+
+	--btn-color-red: #ef5050;
+	--btn-color-light-blue: #d7e3ff;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
