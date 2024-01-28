@@ -6,8 +6,8 @@ const DailyNorma = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [calculatedAmount, setCalculatedAmount] = useState(null);
 
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   useEffect(() => {
-    // Fetch calculatedAmount when the component mounts
     getCalculatedAmount()
       .then((amount) => {
         const formattedAmount = (parseFloat(amount) || 2.0).toFixed(1);
@@ -15,10 +15,9 @@ const DailyNorma = () => {
       })
       .catch((error) => {
         console.error('Error getting calculatedAmount:', error);
-        // Set calculatedAmount to '2.0' by default if fetching fails
         setCalculatedAmount('2.0');
       });
-  }, []);// Пустий масив, щоб ефект виконувався тільки при монтуванні компонента
+  }, []);
 
   const handleModalOpen = () => {
     setIsModalOpen(true);

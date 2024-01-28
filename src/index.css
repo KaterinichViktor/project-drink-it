@@ -1,7 +1,6 @@
 @import-normalize; /* bring in normalize.css styles */
 
-@import url(./css/daily-norma-modal.css);
-@import url(./css/daily-norma.css);
+@import url(./css/styles.css);
 
 *{
   margin: 0;

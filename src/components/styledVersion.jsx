@@ -9,6 +9,7 @@ import {
     ModalHeader,
     FormulasBox,
     FormulaBox,
+    FormulaText,
     ColoredFormula,
     CaptionBox,
     CaptionText,
@@ -21,10 +22,7 @@ import {
     RequiredWaterBox,
     RequiredWater,
     SaveButton,
-    LabelText,
-  } from './normal.styled';
-
-
+  } from './all.styled';
 
 const DailyNormaModal = ({ isOpen, onClose }) => {
   const [gender, setGender] = useState('woman');
@@ -111,9 +109,7 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
 
     formulaResult = formulaResult === 0 ? 2.0 : formulaResult;
 
-    // formulaResult = Math.min(formulaResult, 99);
-
-    setCalculatedAmount(formulaResult > 99 ? 99 : formulaResult.toFixed(1));
+    setCalculatedAmount(formulaResult.toFixed(1));
   };
 
   useEffect(() => {
@@ -190,11 +186,6 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
     return null;
   }
 
-  let displayAmount = calculatedAmount;
-  if (calculatedAmount >= 99) {
-    displayAmount = "99+";
-  }
-
 return (
     <ModalOverlay onMouseDown={handleBackdropClick}>
       <Modal>
@@ -205,11 +196,11 @@ return (
 
         <FormulasBox>
           <FormulaBox>
-            <LabelText>Female:</LabelText>
+            <FormulaText>For woman:</FormulaText>
             <ColoredFormula>V=(M*0.03) + (T*0.4)</ColoredFormula>
           </FormulaBox>
           <FormulaBox>
-            <LabelText>Male:</LabelText>
+            <FormulaText>For man:</FormulaText>
             <ColoredFormula>V=(M*0.04) + (T*0.6)</ColoredFormula>
           </FormulaBox>
         </FormulasBox>
@@ -234,7 +225,7 @@ return (
               onChange={() => handleGenderChange('woman')}
             />
             <label htmlFor="woman">
-              <p className='label-text'>Female</p>
+              <p className='radio-text'>For woman</p>
             </label>
 
             <input
@@ -245,12 +236,11 @@ return (
               checked={gender === 'man'}
               onChange={() => handleGenderChange('man')}
             />
-            <label htmlFor="man"> <p className='label-text'>Male</p></label>
+            <label htmlFor="man"> <p className='radio-text'>For man</p></label>
           </RadioButton>
 
           <label>
             <InputText>Your weight in kilograms:</InputText>
-          </label>
             <WaterFormInput
               type="number"
               value={weight}
@@ -259,13 +249,11 @@ return (
               onBlur={handleWeightBlur}
               ref={weightInputRef}
               defaultValue={weight === 0 ? '' : weight}
-
-              onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
             />
+          </label>
 
           <label>
             <InputText>The time of active participation in sports or other activities with a high physical load in hours:</InputText>
-          </label>
             <WaterFormInput
               type="number"
               value={activityTime}
@@ -274,13 +262,12 @@ return (
               onBlur={handleActivityTimeBlur}
               ref={activityTimeInputRef}
               defaultValue={activityTime === 0 ? '' : activityTime}
-
-              onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
             />
+          </label>
 
           <RequiredWaterBox>
             <RequiredText>The required amount of water in liters per day:</RequiredText>
-            <RequiredWater>{displayAmount} L</RequiredWater>
+            <RequiredWater>{calculatedAmount} L</RequiredWater>
           </RequiredWaterBox>
 
           <FormBigText>Write down how much water you will drink:</FormBigText>
@@ -292,11 +279,8 @@ return (
             onBlur={handleUserAmountBlur}
             ref={userAmountInputRef}
             defaultValue={userAmount === 0 ? '' : userAmount}
-            // className='water-form-input-special'
-            
-            onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+            className='water-form-input-special'
           />
-          
 
           <SaveButton type="button" onClick={handleSave}>Save</SaveButton>
         </form>
