@@ -1,12 +1,16 @@
+// Example in index.js or App.js
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import {store} from './Redux/store';
 import App from './components/App';
-import './index.css';
 
-const rootElement = document.getElementById('root');
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
+
+ReactDOM.render(
+  <Provider store={store}>
     <App />
-  </React.StrictMode>
+  </Provider>,
+  document.getElementById('root')
 );
+
 

@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { saveDataToBackend, getStoredUserData } from './api';
-import '../css/styles.css';
+// import { saveDataToBackend, getStoredUserData } from './api';
+import { getDailyNorma, updateDailyNorma } from '../Redux/auth/thunk';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import '../index.css';
+
 import {
     ModalOverlay,
     Modal,
@@ -22,36 +26,41 @@ import {
     RequiredWater,
     SaveButton,
     LabelText,
-  } from './normal.styled';
+  } from './dailyNorma.styled';
 
 
 
 const DailyNormaModal = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
+
   const [gender, setGender] = useState('woman');
   const [weight, setWeight] = useState(0);
   const [activityTime, setActivityTime] = useState(0);
-  const [calculatedAmount, setCalculatedAmount] = useState(2.0);
-  const [userAmount, setUserAmount] = useState(0);
+  const [dailyNorma, setDailyNorma] = useState(2.0);
+  const [willDrink, setWillDrink] = useState(0);
 
   const weightInputRef = useRef(null);
   const activityTimeInputRef = useRef(null);
-  const userAmountInputRef = useRef(null);
+  const willDrinkInputRef = useRef(null);
 
   const handleGenderChange = (selectedGender) => {
     setGender(selectedGender);
-    calculateAmount();
+    calculateDailyNorma();
   };
 
   const handleWeightChange = (e) => {
-    setWeight(e.target.value);
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+    setWeight(numericValue);
   };
 
   const handleActivityTimeChange = (e) => {
-    setActivityTime(e.target.value);
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+    setActivityTime(numericValue);
   };
 
-  const handleUserAmountChange = (e) => {
-    setUserAmount(e.target.value);
+  const handleWillDrinkChange = (e) => {
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+    setWillDrink(numericValue);
   };
 
   const handleWeightFocus = () => {
@@ -66,9 +75,9 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleUserAmountFocus = () => {
-    if (parseFloat(userAmount) === 0) {
-      userAmountInputRef.current.value = '';
+  const handleWillDrinkFocus = () => {
+    if (parseFloat(willDrink) === 0) {
+      willDrinkInputRef.current.value = '';
     }
   };
 
@@ -77,7 +86,7 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
       weightInputRef.current.value = 0;
       setWeight(0);
     }
-    calculateAmount();
+    calculateDailyNorma();
   };
 
   const handleActivityTimeBlur = () => {
@@ -85,23 +94,23 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
       activityTimeInputRef.current.value = 0;
       setActivityTime(0);
     }
-    calculateAmount();
+    calculateDailyNorma();
   };
 
-  const handleUserAmountBlur = () => {
-    if (userAmount === '' || parseFloat(userAmount) === 0) {
-      userAmountInputRef.current.value = 0;
-      setUserAmount(0);
+  const handleWillDrinkBlur = () => {
+    if (willDrink === '' || parseFloat(willDrink) === 0) {
+      willDrinkInputRef.current.value = 0;
+      setWillDrink(0);
     }
-    calculateAmount();
+    calculateDailyNorma();
   };
 
-  const calculateAmount = () => {
+  const calculateDailyNorma = () => {
     const userWeight = parseFloat(weight);
     const userActivity = parseFloat(activityTime);
     
     if (isNaN(userWeight) || isNaN(userActivity)) {
-      setCalculatedAmount((2.0).toFixed(1));
+      setDailyNorma((2.0).toFixed(1));
       return;
     }
 
@@ -113,11 +122,11 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
 
     // formulaResult = Math.min(formulaResult, 99);
 
-    setCalculatedAmount(formulaResult > 99 ? 99 : formulaResult.toFixed(1));
+    setDailyNorma(formulaResult > 99 ? 99 : formulaResult.toFixed(1));
   };
 
   useEffect(() => {
-    calculateAmount();
+    calculateDailyNorma();
   }, [gender, weight, activityTime]);
 
   useEffect(() => {
@@ -138,15 +147,15 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
 
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   useEffect(() => {
-    const fetchDataFromDatabase = async () => {
+    const fetchData = async () => {
       try {
-        const userData = await getStoredUserData();
-        if (userData) {
-          setGender(userData.gender || 'woman');
-          setWeight(userData.weight || 0);
-          setActivityTime(userData.activityTime || 0);
-          setUserAmount(userData.userAmount || 0);
-          setCalculatedAmount(isNaN(userData.calculatedAmount) ? 2.0 : userData.calculatedAmount);
+        const userData = await dispatch(getDailyNorma());
+        if (userData.payload) {
+          setGender(userData.payload.gender || 'woman');
+          setWeight(userData.payload.weight || 0);
+          setActivityTime(userData.payload.activityTime || 0);
+          setWillDrink(userData.payload.willDrink || 0);
+          setDailyNorma(isNaN(userData.payload.dailyNorma) ? 2.0.toFixed(1) : userData.payload.dailyNorma);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -154,9 +163,9 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
     };
 
     if (isOpen) {
-      fetchDataFromDatabase();
+      fetchData();
     }
-  }, [isOpen]);
+  }, [isOpen, dispatch]);
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget && e.button === 0) {
@@ -170,19 +179,19 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
       gender,
       weight: parseFloat(weight),
       activityTime: parseFloat(activityTime),
-      userAmount: parseFloat(userAmount),
-      calculatedAmount: parseFloat(calculatedAmount),
+      willDrink: parseFloat(willDrink),
+      dailyNorma: parseFloat(dailyNorma),
     };
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    saveDataToBackend(requestData)
+    dispatch(updateDailyNorma(requestData))
       .then((response) => {
         console.log('Data saved to the server:', response);
         onClose();
       })
       .catch((error) => {
         console.error('Error saving data to the server:', error);
-        alert('There was an error saving data. Please try again.');
+        toast.error('There was an error saving data. Please try again.');
       });
   };
 
@@ -190,8 +199,8 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
     return null;
   }
 
-  let displayAmount = calculatedAmount;
-  if (calculatedAmount >= 99) {
+  let displayAmount = dailyNorma;
+  if (dailyNorma >= 99) {
     displayAmount = "99+";
   }
 
@@ -252,13 +261,14 @@ return (
             <InputText>Your weight in kilograms:</InputText>
           </label>
             <WaterFormInput
-              type="number"
+              type="text"
               value={weight}
               onChange={handleWeightChange}
               onFocus={handleWeightFocus}
               onBlur={handleWeightBlur}
               ref={weightInputRef}
               defaultValue={weight === 0 ? '' : weight}
+              maxLength={5}
 
               onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
             />
@@ -267,13 +277,14 @@ return (
             <InputText>The time of active participation in sports or other activities with a high physical load in hours:</InputText>
           </label>
             <WaterFormInput
-              type="number"
+              type="text"
               value={activityTime}
               onChange={handleActivityTimeChange}
               onFocus={handleActivityTimeFocus}
               onBlur={handleActivityTimeBlur}
               ref={activityTimeInputRef}
               defaultValue={activityTime === 0 ? '' : activityTime}
+              maxLength={5}
 
               onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
             />
@@ -285,14 +296,15 @@ return (
 
           <FormBigText>Write down how much water you will drink:</FormBigText>
           <WaterFormInput
-            type="number"
-            value={userAmount}
-            onChange={handleUserAmountChange}
-            onFocus={handleUserAmountFocus}
-            onBlur={handleUserAmountBlur}
-            ref={userAmountInputRef}
-            defaultValue={userAmount === 0 ? '' : userAmount}
-            // className='water-form-input-special'
+            type="text"
+            value={willDrink}
+            onChange={handleWillDrinkChange}
+            onFocus={handleWillDrinkFocus}
+            onBlur={handleWillDrinkBlur}
+            ref={willDrinkInputRef}
+            defaultValue={willDrink === 0 ? '' : willDrink}
+            
+            maxLength={5}
             
             onKeyDown={(e) =>["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
           />
