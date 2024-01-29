@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 // import { saveDataToBackend, getStoredUserData } from './api';
 import { getDailyNorma, updateDailyNorma } from '../Redux/auth/thunk';
 import { useDispatch } from 'react-redux';
@@ -105,10 +105,10 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
     calculateDailyNorma();
   };
 
-  const calculateDailyNorma = () => {
+  const calculateDailyNorma = useCallback(() => {
     const userWeight = parseFloat(weight);
     const userActivity = parseFloat(activityTime);
-    
+
     if (isNaN(userWeight) || isNaN(userActivity)) {
       setDailyNorma((2.0).toFixed(1));
       return;
@@ -120,14 +120,12 @@ const DailyNormaModal = ({ isOpen, onClose }) => {
 
     formulaResult = formulaResult === 0 ? 2.0 : formulaResult;
 
-    // formulaResult = Math.min(formulaResult, 99);
-
     setDailyNorma(formulaResult > 99 ? 99 : formulaResult.toFixed(1));
-  };
+  }, [gender, weight, activityTime]);
 
   useEffect(() => {
     calculateDailyNorma();
-  }, [gender, weight, activityTime]);
+  }, [calculateDailyNorma]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {

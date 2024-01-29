@@ -57,9 +57,9 @@
 // // };
 
 
-router.get('/:id/dailynorma', authenticate, isValidId, ctrl.getDailyNormaData);
-router.patch('/:id/dailynorma', authenticate, isValidId, ctrl.updateDailyNormaData);
+// router.get('/:id/dailynorma', authenticate, isValidId, ctrl.getDailyNormaData);
+// router.patch('/:id/dailynorma', authenticate, isValidId, ctrl.updateDailyNormaData);
 
-// New Endpoints
-router.get('/:id/dailynorma', authenticate, isValidId, ctrl.getDailyNormaData);
-router.patch('/:id/dailynorma', authenticate, isValidId, validBody(schemas.updateDailyNormaDataSchema), ctrl.updateDailyNormaData);
+// // New Endpoints
+// router.get('/:id/dailynorma', authenticate, isValidId, ctrl.getDailyNormaData);
+// router.patch('/:id/dailynorma', authenticate, isValidId, validBody(schemas.updateDailyNormaDataSchema), ctrl.updateDailyNormaData);
