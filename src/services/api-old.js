@@ -62,4 +62,12 @@
 
 // // New Endpoints
 // router.get('/:id/dailynorma', authenticate, isValidId, ctrl.getDailyNormaData);
+
+
+
+// router.get('/:id/users/info', authenticate, isValidId, ctrl.getDailyNormaData);
+// router.patch('/:id/dailynorma', authenticate, isValidId, ctrl.updateDailyNormaData);
+
+
+
 // router.patch('/:id/dailynorma', authenticate, isValidId, validBody(schemas.updateDailyNormaDataSchema), ctrl.updateDailyNormaData);
